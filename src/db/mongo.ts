@@ -11,7 +11,6 @@ export const  connectToMongoDb = async() : Promise<void> =>{
     try{
         const urlMongo = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.CLUSTER}.zolqtad.mongodb.net/?appName=${process.env.CLUSTER_NAME}`;
 
-        console.log(urlMongo)
         client = new MongoClient(urlMongo)
         await client.connect();
         miBaseDeDatos = client.db(dbName);

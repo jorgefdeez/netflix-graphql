@@ -27,7 +27,7 @@ export const typeDefs = gql`
         login(email: String!, password: String!): String!,
 
         addPeli(name: String!, length: Int!, date: String!, format: String!) : Peli!
-       
+        updatePeli(id: ID!, name: String, length: Int, date: String, format: String): Peli!
         deletePeli(id: ID!): [Peli]!
 
         addPeliToUser(idPeli: ID!): User!

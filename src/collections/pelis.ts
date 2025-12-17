@@ -52,7 +52,7 @@ export const añadirPeliLista = async(idPeli: string, userId: string) =>{
     await db.collection(userCOLLECTION).updateOne({
         _id: new ObjectId(userId)
     },
-        { $addToSet: { mi_lista: idPeli } }
+        {$addToSet: { mi_lista: idPeli } }
     )
 
     const updateUser = await db.collection(userCOLLECTION).findOne({
@@ -68,7 +68,7 @@ export const eliminarPeliLista = async(idPeli: string, userId: string) =>{
     const iduser=new ObjectId(userId)
     const eliminarPeli=await getPeliID(idPeli)
     if(!eliminarPeli){
-         throw new Error("No se ha encontrado la peli")
+        throw new Error("No se ha encontrado la peli")
     }
 
     await db.collection<User>(userCOLLECTION).updateOne(
@@ -76,9 +76,35 @@ export const eliminarPeliLista = async(idPeli: string, userId: string) =>{
         {$pull:{mi_lista:idPeli}}
     )
 
-      const updateUser = await db.collection(userCOLLECTION).findOne({
+    const updateUser = await db.collection(userCOLLECTION).findOne({
         _id: new ObjectId(userId)
     })
 
     return updateUser
+}
+
+export const actualizarPeli = async (id: string, name?: string, length?: number, date?: string, format?: string) => {
+    const db = getDb()
+
+    const updateData: any = {}
+
+    if (name) updateData.name = name
+    if (length) updateData.length = length
+    if (date) updateData.date = date
+    if (format) updateData.format = format
+
+    if (!updateData) {
+        throw new Error("No hay datos para actualizar")
+    }
+
+    const result = await db.collection(pelisCOLLECTION).updateOne(
+        { _id: new ObjectId(id) },
+        { $set: updateData }
+    )
+
+    if (result.matchedCount === 0) {
+        throw new Error("No se ha encontrado la peli")
+    }
+
+    return await getPeliID(id)
 }

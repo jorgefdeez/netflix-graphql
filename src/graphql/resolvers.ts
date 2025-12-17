@@ -1,7 +1,7 @@
     import { IResolvers } from "@graphql-tools/utils";
     import{createUser, validateUser} from "../collections/users"
     import{signToken} from "../auth"
-    import { createPeli, getPeliID, getPelis, eliminarPelicula, añadirPeliLista, eliminarPeliLista} from "../collections/pelis";
+    import { createPeli, getPeliID, getPelis, eliminarPelicula, añadirPeliLista, eliminarPeliLista, actualizarPeli} from "../collections/pelis";
     import { getDb } from "../db/mongo";
     import { ObjectId } from "mongodb";
     import { pelisCOLLECTION } from "../utils";
@@ -77,7 +77,17 @@
                         throw new Error("logeate bien") 
                     }
                     return await eliminarPeliLista(idPeli,user._id.toString())
+                },
+                updatePeli: async(_, {id, name, length, date, format}, {user}) =>{
+                    if(!user){
+                        throw new Error("logeate bien")
+                    }
+                    const update = await actualizarPeli(id, name, length, date, format)
+                    //console.log(update)
+                    return update
                 }
+
+
 
         }
     }
