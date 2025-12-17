@@ -1,26 +1,39 @@
     import { IResolvers } from "@graphql-tools/utils";
     import{createUser, validateUser} from "../collections/users"
+    import{aniadirAmigo, crearAmigo} from "../collections/friends"
     import{signToken} from "../auth"
     import { createPeli, getPeliID, getPelis, eliminarPelicula, añadirPeliLista, eliminarPeliLista, actualizarPeli} from "../collections/pelis";
     import { getDb } from "../db/mongo";
     import { ObjectId } from "mongodb";
-    import { pelisCOLLECTION } from "../utils";
-    import { Peli, User } from "../types";
+    import { pelisCOLLECTION, friendsCOLLECTION } from "../utils";
+    import { Peli, User ,OtherUsers} from "../types";
 
     export const resolvers: IResolvers = {
         User:{
                 mi_lista:async(parent:User)=>{
-                const db=getDb()
-                const ids=parent.mi_lista as Array<string>||[]
+                    const db=getDb()
+                    const ids=parent.mi_lista as Array<string>||[]  //si tipas con user, no hace falta el as array
 
-                const idMongo= ids.map(x=>new ObjectId(x))
+                    const idMongo= ids.map(x=>new ObjectId(x))
 
-                return await db.collection<Peli>(pelisCOLLECTION).find({
-                    _id:{$in:idMongo}
+                    return await db.collection<Peli>(pelisCOLLECTION).find({
+                        _id:{$in:idMongo}
 
-                }).toArray()
+                    }).toArray()
 
-            }
+                },
+
+                lista_amigos:async(parent:User)=>{
+                    const db = getDb()
+                    const ids = parent.lista_amigos 
+
+                    const idMongo= ids.map(x=>new ObjectId(x))
+ 
+                    return await db.collection<OtherUsers>(friendsCOLLECTION).find({
+                        _id:{$in:idMongo}
+
+                    }).toArray()
+                }
         },
         Query: {
                 me: async (_, __, { user }) => {
@@ -85,6 +98,21 @@
                     const update = await actualizarPeli(id, name, length, date, format)
                     //console.log(update)
                     return update
+                },
+                addFriend: async(_,{idAmigo}, {user}) =>{
+                    if(!user){
+                        throw new Error("logeate anda")
+                    }
+                    return await aniadirAmigo(idAmigo, user._id.toString())
+                },
+                crearFriend: async(_,{name, email}, {user}) => {
+                    console.log(user)
+                    if(!user){
+                        throw new Error("logeate anda")
+
+                    }
+                    const result = await crearAmigo(name, email)
+                    return result
                 }
 
 

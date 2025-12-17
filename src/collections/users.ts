@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs"
 import { getDb } from "../db/mongo"
-import { userCOLLECTION } from "../utils"
-
+import {userCOLLECTION } from "../utils"
 
 export const createUser=async(email:string,password:string)=>{
 

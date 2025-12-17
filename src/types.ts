@@ -5,7 +5,14 @@ export type User= {
     _id: ObjectId
     email: string,
     password: string,
-    mi_lista: string[]
+    mi_lista: string[],
+    lista_amigos: string[]
+}
+
+export type OtherUsers={
+    _id: ObjectId
+    name: string,
+    email: string,
 }
 
 export type Peli={

@@ -5,7 +5,14 @@ export const typeDefs = gql`
     type User{
         _id: ID!,
         email: String!,
-        mi_lista: [Peli]!
+        mi_lista: [Peli]!,
+        lista_amigos: [UserFriend]!
+    }
+
+    type UserFriend{
+        _id: ID!,
+        name: String,
+        email: String!,
     }
 
     type Peli{
@@ -32,5 +39,7 @@ export const typeDefs = gql`
 
         addPeliToUser(idPeli: ID!): User!
         removePeliFromUser(idPeli: ID!): User!
+        addFriend(idAmigo: ID!): User!,
+        crearFriend(name: String!, email: String!): UserFriend!
     }
 `
