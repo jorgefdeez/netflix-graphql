@@ -108,7 +108,7 @@
                     }
                     return await eliminarPeliculaYQuitarlaLista(idPeli)
 
-                },
+                },     
 
 
                 addFriend: async(_,{idAmigo}, {user}) =>{

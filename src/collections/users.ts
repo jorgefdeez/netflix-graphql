@@ -14,7 +14,6 @@ export const createUser=async(email:string,password:string)=>{
     })
 
     return result.insertedId.toString()
-
 }
 
 export const validateUser=async(email:string,password:string)=>{
