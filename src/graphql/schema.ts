@@ -38,7 +38,9 @@ export const typeDefs = gql`
         deletePeli(id: ID!): [Peli]!
 
         addPeliToUser(idPeli: ID!): User!
-        removePeliFromUser(idPeli: ID!): User!
+        removePeliFromUser(idPeli: ID!): User!,
+        delete_Peli_From_Db_and_List(idPeli: ID!) : [Peli]!
+
         addFriend(idAmigo: ID!): User!,
         crearFriend(name: String!, email: String!): UserFriend!
     }

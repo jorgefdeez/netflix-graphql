@@ -89,6 +89,7 @@ export const añadirPeliLista = async(idPeli: string, userId: string) =>{
     return updateUser
 }
 
+//borrar peli de la lista
 export const eliminarPeliLista = async(idPeli: string, userId: string) =>{
     const db=getDb()
 
@@ -108,5 +109,38 @@ export const eliminarPeliLista = async(idPeli: string, userId: string) =>{
     })
 
     return updateUser
+}
+
+//al eliminar una peli, tambien la borra de la lista
+export const eliminarPeliculaYQuitarlaLista = async (id: string) =>{
+    const db = getDb()
+
+    const consUser = await db.collection(userCOLLECTION).find().toArray()
+
+    const ids = consUser.map((x)=>{
+        return x._id.toString()
+    })
+
+    
+    ids.forEach(async(x)=>{
+        const iduser=new ObjectId(x)
+        const eliminarPeli=await getPeliID(id)
+        console.log(id)
+        if(!eliminarPeli){
+            throw new Error("No se ha encontrado la peli")
+        }
+
+        await db.collection<User>(userCOLLECTION).updateOne(
+            {_id:iduser},
+            {$pull:{mi_lista:id}}
+        )
+    })
+
+    const eliminado = await db.collection(pelisCOLLECTION).deleteOne({_id: new ObjectId(id)})
+    if(!eliminado) throw new Error("No se ha encontrado la peli")   
+
+    
+    const pelis = getPelis()
+    return pelis
 }
 

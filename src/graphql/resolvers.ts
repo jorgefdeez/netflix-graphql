@@ -2,7 +2,7 @@
     import{createUser, validateUser} from "../collections/users"
     import{aniadirAmigo, crearAmigo} from "../collections/friends"
     import{signToken} from "../auth"
-    import { createPeli, getPeliID, getPelis, eliminarPelicula, añadirPeliLista, eliminarPeliLista, actualizarPeli} from "../collections/pelis";
+    import { createPeli, getPeliID, getPelis, eliminarPelicula, añadirPeliLista, eliminarPeliLista, actualizarPeli, eliminarPeliculaYQuitarlaLista} from "../collections/pelis";
     import { getDb } from "../db/mongo";
     import { ObjectId } from "mongodb";
     import { pelisCOLLECTION, friendsCOLLECTION } from "../utils";
@@ -64,6 +64,8 @@
                     if (!user) { throw new Error("Credencialias no validos") }
                     return signToken(user._id.toString())
                 },
+
+
                 addPeli: async (_, { name, length, date, format }, { user }) => {
                     if (!user) {
                         throw new Error("logeate")
@@ -79,6 +81,15 @@
                     const result = await eliminarPelicula(id)
                     return result
                 },
+                updatePeli: async(_, {id, name, length, date, format}, {user}) =>{
+                    if(!user){
+                        throw new Error("logeate bien")
+                    }
+                    const update = await actualizarPeli(id, name, length, date, format)
+                    return update
+                },
+
+
                 addPeliToUser: async(_, {idPeli}, { user }) => {
                     if (!user) {
                     throw new Error("logeate bien")
@@ -91,14 +102,15 @@
                     }
                     return await eliminarPeliLista(idPeli,user._id.toString())
                 },
-                updatePeli: async(_, {id, name, length, date, format}, {user}) =>{
+                delete_Peli_From_Db_and_List:async (_, {idPeli}, { user }) => {
                     if(!user){
-                        throw new Error("logeate bien")
+                        throw new Error("logeate bien") 
                     }
-                    const update = await actualizarPeli(id, name, length, date, format)
-                    //console.log(update)
-                    return update
+                    return await eliminarPeliculaYQuitarlaLista(idPeli)
+
                 },
+
+
                 addFriend: async(_,{idAmigo}, {user}) =>{
                     if(!user){
                         throw new Error("logeate anda")
