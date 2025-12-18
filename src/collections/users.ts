@@ -10,7 +10,8 @@ export const createUser=async(email:string,password:string)=>{
     const result= await db.collection(userCOLLECTION).insertOne({
         email,
         password:passwordEncryptao,
-        mi_lista:[]
+        mi_lista:[],
+        lista_amigos:[]
     })
 
     return result.insertedId.toString()
